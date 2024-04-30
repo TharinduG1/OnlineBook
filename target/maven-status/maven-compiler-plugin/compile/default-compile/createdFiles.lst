@@ -6,8 +6,10 @@ servlets\AdminLoginServlet.class
 servlets\RemoveBookServlet.class
 servlets\DBConnection.class
 servlets\UserLoginServlet.class
+servlets\TokenGenerationServlet.class
 sql\IUserContants.class
 servlets\UserRegisterServlet.class
 servlets\BuyBooksServlet.class
 constants\IDatabase.class
+servlets\OAuth2ResourceServerServlet.class
 servlets\ViewBookServlet.class
