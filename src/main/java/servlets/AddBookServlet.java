@@ -9,6 +9,9 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import constants.IOnlineBookStoreConstants;
 import sql.IBookConstants;
@@ -20,6 +23,24 @@ public class AddBookServlet extends GenericServlet{
 	private final static Logger logger = Logger.getLogger(AddBookServlet.class);
 	public void service(ServletRequest req,ServletResponse res) throws IOException,ServletException
 	{
+
+		if (!(req instanceof HttpServletRequest) || !(res instanceof HttpServletResponse)) {
+			throw new ServletException("Non-HTTP request or response");
+		}
+
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+
+		HttpSession session = request.getSession();
+
+		String sessionToken = (String) session.getAttribute("csrfToken");
+		String requestToken = request.getParameter("csrfToken");
+
+		if (sessionToken == null || !sessionToken.equals(requestToken)) {
+			response.getWriter().println("CSRF token validation failed.");
+			return; // CSRF check failed
+		}
+
 		PrintWriter pw = res.getWriter();
 		res.setContentType(IOnlineBookStoreConstants.CONTENT_TYPE_TEXT_HTML);
 		String bCode = req.getParameter(IBookConstants.COLUMN_BARCODE);
@@ -41,6 +62,7 @@ public class AddBookServlet extends GenericServlet{
 			{
 				RequestDispatcher rd = req.getRequestDispatcher("AddBook.html");
 				rd.include(req, res);
+
 				logger.info("Book Added into the system "+ bCode);
 				pw.println("<div class=\"tab\">Book Detail Updated Successfully!<br/>Add More Books</div>");
 			}
