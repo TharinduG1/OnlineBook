@@ -12,14 +12,16 @@ import javax.servlet.ServletResponse;
 
 import constants.IOnlineBookStoreConstants;
 import sql.IBookConstants;
+import org.apache.log4j.Logger;
+
 
 public class AddBookServlet extends GenericServlet{
+
+	private final static Logger logger = Logger.getLogger(AddBookServlet.class);
 	public void service(ServletRequest req,ServletResponse res) throws IOException,ServletException
 	{
 		PrintWriter pw = res.getWriter();
-		
 		res.setContentType(IOnlineBookStoreConstants.CONTENT_TYPE_TEXT_HTML);
-		
 		String bCode = req.getParameter(IBookConstants.COLUMN_BARCODE);
 		String bName = req.getParameter(IBookConstants.COLUMN_NAME);
 		String bAuthor = req.getParameter(IBookConstants.COLUMN_AUTHOR);
@@ -39,6 +41,7 @@ public class AddBookServlet extends GenericServlet{
 			{
 				RequestDispatcher rd = req.getRequestDispatcher("AddBook.html");
 				rd.include(req, res);
+				logger.info("Book Added into the system "+ bCode);
 				pw.println("<div class=\"tab\">Book Detail Updated Successfully!<br/>Add More Books</div>");
 			}
 			else
